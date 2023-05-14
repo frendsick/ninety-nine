@@ -3,18 +3,16 @@
   println(nth)
 }
 
-def getNth[T](index: Int, list: List[T]): T = {
-  // Guard clauses
-  if (list.isEmpty) throw new NoSuchElementException("list is empty")
-  if (index < 0) throw new IndexOutOfBoundsException("negative index")
-  if (index >= list.length)
+// Recursively find the Nth value
+def getNth[T](index: Int, list: List[T]): T = (index, list) match {
+  case (0, head :: _)     => head
+  case (index, _ :: tail) => getNth(index - 1, tail)
+  case (n, _) if n < 0 =>
+    throw new IndexOutOfBoundsException("negative index")
+  case (n, l) if n >= l.length =>
     throw new IndexOutOfBoundsException(
       s"cannot get item at index ${index} from a list with ${list.length} items"
     )
-
-  // Recursively find the Nth value
-  list match {
-    case head :: _ if index == 0 => head
-    case _                       => getNth(index - 1, list.tail)
-  }
+  case (_, Nil) => throw new NoSuchElementException("list is empty")
+  case _        => throw new UnknownError
 }
